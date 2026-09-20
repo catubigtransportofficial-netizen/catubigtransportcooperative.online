@@ -1,0 +1,502 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CATRANSCO — Catubig Transport Cooperative</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg-dark: #0f1118;
+      --bg-card: #1a1c25;
+      --bg-card-hover: #222530;
+      --red-primary: #d62828;
+      --red-glow: rgba(214, 40, 40, 0.4);
+      --cyan-primary: #00d4ff;
+      --green-primary: #22c55e;
+      --orange-primary: #f97316;
+      --text-white: #f0f0f0;
+      --text-gray: #888a95;
+      --border-faint: rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0b0d13 0%, #121520 50%, #0f1118 100%);
+      color: var(--text-white);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== LOADING SCREEN ===== */
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      background: #0b0d13;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    .loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .loader-ring {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .ring-bg {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(214,40,40,0.15);
+    }
+    .ring-progress {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: var(--red-primary);
+      border-right-color: var(--red-primary);
+      animation: ringSpin 1.2s linear infinite;
+      filter: drop-shadow(0 0 8px var(--red-glow));
+    }
+    @keyframes ringSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .logo-text {
+      font-size: clamp(28px, 8vw, 42px);
+      font-weight: 900;
+      letter-spacing: clamp(4px, 3vw, 10px);
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #d48c8c, #e05050, #d62828, #e05050, #d48c8c);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: textGradient 3s ease infinite;
+      text-align: center;
+    }
+    @keyframes textGradient {
+      0% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+      100% { background-position: 0% center; }
+    }
+    .subtitle-text {
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: var(--text-gray);
+      margin-top: 12px;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      opacity: 0;
+      transition: opacity 1s ease 0.4s;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 16px 60px;
+    }
+    .main-content.visible {
+      opacity: 1;
+    }
+
+    .section-tag {
+      color: var(--red-primary);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-family: monospace;
+      opacity: 0.8;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 7vw, 38px);
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .section-title span:nth-child(1) { color: var(--text-white); }
+    .section-title span:nth-child(2) { color: var(--red-primary); }
+    .section-title span:nth-child(3) { color: var(--cyan-primary); }
+
+    .section-desc {
+      color: var(--text-gray);
+      font-size: 15px;
+      max-width: 700px;
+      margin-bottom: 32px;
+      line-height: 1.8;
+    }
+
+    /* ===== BUTTONS — TOUCH-FRIENDLY ===== */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .btn {
+      padding: 14px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      flex: 1;
+      -webkit-appearance: none;
+    }
+    .btn-green {
+      background: rgba(34,197,94,0.15);
+      color: var(--green-primary);
+      border: 1px solid rgba(34,197,94,0.3);
+    }
+    .btn-green:active { transform: scale(0.97); }
+    .btn-orange {
+      background: rgba(249,115,22,0.15);
+      color: var(--orange-primary);
+      border: 1px solid rgba(249,115,22,0.3);
+    }
+    .btn-orange:active { transform: scale(0.97); }
+    .btn-red {
+      background: rgba(214,40,40,0.15);
+      color: var(--red-primary);
+      border: 1px solid rgba(214,40,40,0.3);
+    }
+    .btn-red:active { transform: scale(0.97); }
+    .btn-red-fill {
+      background: linear-gradient(90deg, #b91c1c, #d62828, #ef4444);
+      color: white;
+      font-size: 16px;
+      padding: 16px 28px;
+      border-radius: 6px;
+      box-shadow: 0 0 20px var(--red-glow);
+      width: 100%;
+      max-width: 400px;
+    }
+    .btn-red-fill:active { transform: scale(0.98); }
+    .btn-outline {
+      background: transparent;
+      color: var(--text-white);
+      border: 1px solid var(--border-faint);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* ===== CARDS ===== */
+    .cards-header {
+      margin: 50px 0 20px;
+    }
+    .cards-tag {
+      color: var(--red-primary);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-family: monospace;
+      margin-bottom: 8px;
+      opacity: 0.7;
+    }
+    .cards-title {
+      font-size: clamp(22px, 5vw, 32px);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .cards-subtitle {
+      color: var(--text-gray);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .hub-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 10px;
+      padding: 22px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .hub-card:active { transform: scale(0.98); background: var(--bg-card-hover); }
+    .domain-label {
+      font-size: 11px;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      opacity: 0.6;
+    }
+    .card-icon { font-size: 28px; margin-bottom: 10px; }
+    .card-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .card-title.blue { color: var(--cyan-primary); }
+    .card-title.white { color: var(--text-white); }
+    .card-desc { color: var(--text-gray); font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .tag {
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--text-gray);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      background: rgba(255,200,0,0.1);
+      border: 1px solid rgba(255,200,0,0.25);
+      border-radius: 4px;
+      font-size: 11px;
+      color: #ffc107;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .live-badge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      background: #ffc107;
+      border-radius: 50%;
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .card-link {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 32px;
+      height: 32px;
+      background: rgba(100,150,255,0.15);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--cyan-primary);
+      text-decoration: none;
+    }
+    .card-url { font-size: 11px; color: var(--text-gray); opacity: 0.5; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loader-ring">
+    <div class="ring-bg"></div>
+    <div class="ring-progress"></div>
+  </div>
+  <div class="logo-text">CATRANSCO</div>
+  <p class="subtitle-text">CATUBIG TRANSPORT COOPERATIVE · LOADING</p>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content" id="mainContent">
+  <div class="section-tag">YOUR TRAVEL BUDDY</div>
+  <h1 class="section-title">
+    <span>ONE GOAL.</span><br>
+    <span>ONE VISION.</span><br>
+    <span>ONE UNITY.</span>
+  </h1>
+  <p class="section-desc">
+    Passenger Services , safe, and affordable travel built for the people of Northern Samar and beyond.
+  </p>
+
+  <div class="cards-header">
+    <h2 class="cards-title">OUR SERVICES</h2>
+    <p class="cards-subtitle">All transport services inside this hub. Tap a card to learn more or book directly.
+  </p>
+  </div>
+
+  
+<div class="hub-card">
+      <span class="live-badge">ROUTES & FARES </span>
+      <h3 class="card-title white">CATUBIG ↔ CATARMAN</h3>
+      <h3 class="card-desc">Catubig ↔ Catarman ₱ 150 (REGULAR) </h3></p>
+      <h3 class="card-desc">Catubig ↔ Catarman ₱ 120 (SC / PWD / Student) </h3></p>
+      <p class="card-desc">Daily transport between Catubig & Catarman Vice Versa.</p>
+      <div class="card-tags">
+        <span class="tag">DAILY</span>
+        <span class="tag">Regular 150</span>
+        <span class="tag">SC / PWD / Student 120</span>
+      </div></p>
+      <div class="card-tags">
+        
+   </p>
+            </div>
+      <a href="#" class="card-link">↗</a>
+    </div>
+
+<div class="cards-grid">
+    <div class="hub-card">
+      <h3 class="card-title red">CATUBIG TRANSPORT COOPERATIVE (CATRANSCO)</h3>
+      <div class="domain-label">SPECIAL TRIP — One-Day Rental</div>
+      <p class="card-desc">TRIP COVERING TOWNS ACROSS Northern SAMAR.
+      <div class="card-tags"> 
+            </div>
+      <a href="#" class="card-link">↗</a>
+    </div>
+
+<div class="cards-grid">
+    <div class="hub-card">
+      <div class="domain-label"></div>
+      <h3 class="card-title red">CHARTER & RENTAL</h3>
+      <p class="card-desc">Reserve vehicles for private trips, events, family outings & special journeys.</p>
+      <div class="card-tags">
+        <span class="tag">CHARTER</span>
+        <span class="tag">RENTAL</span>
+        <span class="tag">PRIVATE TRIPS</span>
+        <span class="tag">PRIVATE TRIPS</span>
+      </div>
+      <a href="#" class="card-link">↗</a>
+    </div>
+<div class="hub-card">
+      <span class="live-badge">ROUTES & FARES </span>
+      <h2 class="card-title red">SPECIAL TRIP = ONE DAY RENTAL</h2>
+      <h3 class="card-desc">DESTINATION VICE VERSA.</p>
+      <h3 class="card-desc">Catubig ↔ Rawis, Pambujan, San Roque ₱ 3,500.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Mondragon, Catarman, Bobon ₱ 4,000.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ San Jose, Rosario          ₱ 5,000.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Lavezares, Allen           ₱ 7,000.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Victoria, San Isidro       ₱ 8,000.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Palapag, Mapanas           ₱ 4,000.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Gamay, Lapinig             ₱ 4,500.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Calbayog                   ₱ 8,000.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Catbalogan ₱ 12,000.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Tacloban ₱ 18,000.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Borongan ₱ 17,000.00 </h3></p>
+      <h3 class="card-desc">Catubig ↔ Guiuan, Sulangan ₱ 18,000.00 </h3></p>
+       <p class="card-url">*Rates are for one-day rental only. Contact us for multi-day trips*</p
+      <div class="card-tags">
+      <div class="card-tags">
+      </div>
+      <p class="card-url">Route status: Active</p>
+
+    <a href="tel:+639696141036" class="btn btn-green">CALL US</a>
+    <a href="sms:+639696141036?body=Hi!%20I'd%20like%20to%20book%20transport%20service." class="btn btn-red">TEXT US</a>
+    <a href="https://m.me/1119495924586176" target="_blank" rel="noopener" class="btn btn-orange">MESSAGE US</a>
+    <div class="btn-row">
+    <a href="#" class="btn btn-red-fill">BOOK YOUR TRIP NOW →</a>
+  </div>
+  <div class="btn-row">
+    <a href="#" target="_blank" class="btn btn-outline">▶ FACEBOOK PAGE</a>
+  </div>
+</div>
+
+<div class="hub-card">
+<!-- COMPLIANCE -->
+<section id="compliance" style="margin: 80px 0; text-align: center;">
+  <h2 style="font-size: 32px; color: var(--neon-green); margin-bottom: 20px; text-transform: uppercase;">Compliance</h2>
+  <div style="display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 700px; margin-left: auto; margin-right: auto;">
+    <div style="background: var(--bg-card); padding: 28px; border: 1px solid var(--border-faint); text-align: center;">
+      <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: rgba(255,255,255,0.03); border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+        <img src="Logo2.PNG" alt="CDA Logo" style="width: 60px; height: 60px; object-fit: contain;">
+      </div>
+      <h3 style="color: var(--neon-green); margin-bottom: 10px;">Cooperative Development Authority</h3>
+      <p style="color: var(--text-gray); font-size: 14px; line-height: 1.6;">
+        <strong>CDA Reg. No.:</strong> 9520-100800039502<br>
+        <strong>Date Issued:</strong> August 06, 2026<br>
+        RA 9520 — Philippine Cooperative Code of 2008
+      </p>
+    </div>
+    <div style="background: var(--bg-card); padding: 28px; border: 1px solid var(--border-faint); text-align: center;">
+      <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: rgba(255,255,255,0.03); border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+        <img src="Logo3.jpg" alt="BIR Logo" style="width: 60px; height: 60px; object-fit: contain;">
+      </div>
+      <h3 style="color: var(--neon-green); margin-bottom: 10px;">Bureau of Internal Revenue</h3>
+      <p style="color: var(--text-gray); font-size: 14px; line-height: 1.6;">
+        <strong>TIN:</strong> 812-980-869-00000<br>
+        <strong>Tax Exemption:</strong> RA 9520 Articles 60 & 61
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="margin: 80px 0; text-align: center;">
+  <h2 style="font-size: 32px; color: var(--red-primary); margin-bottom: 20px; text-transform: uppercase;">Contact Us</h2>
+  <div style="background: var(--bg-card); padding: 28px; border: 1px solid var(--border-faint); max-width: 700px; margin-left: auto; margin-right: auto;">
+    <div style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+      <strong style="color: var(--neon-blue);">📞 Mobile:</strong>
+      <a href="tel:+639696141036" style="color: var(--text-white); margin-left: 8px; text-decoration: none;">+63 969 614 1036</a>
+    </div>
+    <div style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+      <strong style="color: var(--neon-blue);">💬 Messenger:</strong>
+      <a href="https://m.me/1119495924586176" target="_blank" style="color: var(--text-white); margin-left: 8px; text-decoration: none;">Open Chat →</a>
+    </div>
+    <div style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+      <strong style="color: var(--neon-blue);">✉️ Email:</strong>
+      <a href="mailto:catubigtransport.official@gmail.com" style="color: var(--text-white); margin-left: 8px; text-decoration: none;">catubigtransport.official@gmail.com</a>
+    </div>
+    <div style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+      <strong style="color: var(--neon-blue);">📍 Address:</strong>
+      <span style="color: var(--text-white); margin-left: 8px;">B. Tafalla St., Brgy. 3, Poblacion, Catubig, Northern Samar</span>
+    </div>
+    <div>
+      <strong style="color: var(--neon-blue);">🕐 Hours:</strong>
+      <span style="color: var(--text-white); margin-left: 8px;">Mon–Sun, 6:00 AM – 6:00 PM</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="text-align: center;">
+  <div class="footer-brand">CATUBIG TRANSPORT COOPERATIVE (CATRANSCO)</div>
+  <div class="footer-details">
+    B. Tafalla Street, Brgy. 3, Poblacion, Catubig, Northern Samar<br>
+    <strong>CDA Reg. No.:</strong> 9520-100800039502 | <strong>TIN:</strong> 812-980-869-00000
+  </div>
+  <div class="copyright">© 2026 Catubig Transport Cooperative. All Rights Reserved.</div>
+</footer>
+
+<script>
+// ✅ LOADING SCREEN — WORKS ON MOBILE
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loadingScreen').classList.add('hidden');
+    document.getElementById('mainContent').classList.add('visible');
+  }, 2500);
+});
+</script>
+
+</body>
+</html>
