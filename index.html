@@ -1,0 +1,687 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CATRANSCO — Catubig Transport Cooperative</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    :root {
+      --neon-blue: #00f3ff;
+      --neon-green: #00ff66;
+      --neon-gold: #ffcc00;
+      --neon-red: #ff3333;
+      --darkest: #050505;
+      --dark: #121010;
+      --card: #1a1a1a;
+      --text: #ffffff;
+      --muted: #999999;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top right, rgba(255, 51, 51, 0.2), transparent 50%),
+        linear-gradient(180deg, #1a0a0a 0%, #121010 40%, #0a0a0a 100%);
+      min-height: 100vh;
+      color: var(--text);
+      padding-bottom: 50px;
+    }
+
+    /* === HEADER — EXACTLY LIKE YOUR SCREENSHOT === */
+    .header {
+      padding: 40px 20px 30px;
+      text-align: center;
+    }
+    .logo-line {
+      font-size: clamp(2.5rem, 10vw, 3.8rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+    .logo-white { color: #ffffff; }
+    .logo-red {
+      color: var(--neon-red);
+      text-shadow: 0 0 20px rgba(255, 51, 51, 0.4);
+    }
+    .logo-blue {
+      color: var(--neon-blue);
+      text-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+    }
+    .tagline {
+      font-size: 16px;
+      color: var(--muted);
+      margin-top: 20px;
+      line-height: 1.8;
+    }
+
+    /* === NAV TABS — EXACT COLORS FROM SCREENSHOT === */
+    .nav-hub {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      padding: 10px 20px 25px;
+    }
+    .tab {
+      flex: 1 1 130px;
+      padding: 14px 10px;
+      border-radius: 4px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid transparent;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+    .tab:hover { transform: scale(1.03); }
+    .tab.active {
+      border-radius: 4px;
+      box-shadow: 0 0 15px currentColor, inset 0 0 8px currentColor;
+    }
+    .tab-community {
+      background: rgba(0, 243, 255, 0.08);
+      color: var(--neon-blue);
+      border-color: rgba(0, 243, 255, 0.35);
+    }
+    .tab-community:hover, .tab-community.active {
+      border-color: var(--neon-blue);
+      background: rgba(0, 243, 255, 0.15);
+    }
+    .tab-passenger {
+      background: rgba(0, 255, 102, 0.08);
+      color: var(--neon-green);
+      border-color: rgba(0, 255, 102, 0.35);
+    }
+    .tab-passenger:hover, .tab-passenger.active {
+      border-color: var(--neon-green);
+      background: rgba(0, 255, 102, 0.15);
+    }
+    .tab-driver {
+      background: rgba(255, 204, 0, 0.08);
+      color: var(--neon-gold);
+      border-color: rgba(255, 204, 0, 0.35);
+    }
+    .tab-driver:hover, .tab-driver.active {
+      border-color: var(--neon-gold);
+      background: rgba(255, 204, 0, 0.15);
+    }
+    .tab-member {
+      background: rgba(255, 51, 51, 0.1);
+      color: var(--neon-red);
+      border-color: rgba(255, 51, 51, 0.35);
+      flex: 1 1 100%;
+    }
+    .tab-member:hover, .tab-member.active {
+      border-color: var(--neon-red);
+      background: rgba(255, 51, 51, 0.18);
+    }
+
+    /* === PANELS === */
+    .panel {
+      display: none;
+      padding: 0 20px 20px;
+      max-width: 580px;
+      margin: 0 auto;
+      animation: fadeIn 0.4s ease;
+    }
+    .panel.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .card {
+      background: rgba(26, 26, 26, 0.7);
+      border-radius: 6px;
+      padding: 28px 24px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .card h3 {
+      font-size: 22px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+    .card p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    /* === POST FORM === */
+    textarea, input, select {
+      width: 100%;
+      padding: 15px 18px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      font-size: 16px;
+      background: #0f0f0f;
+      color: #fff;
+      outline: none;
+      margin-bottom: 14px;
+      transition: all 0.3s;
+    }
+    textarea:focus, input:focus, select:focus {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    }
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    /* === POSTS & COMMENTS === */
+    .post-item {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 4px;
+      margin-bottom: 16px;
+      border-left: 3px solid var(--neon-blue);
+    }
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .post-author {
+      font-weight: 700;
+      color: #fff;
+      font-size: 16px;
+    }
+    .post-role {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 2px;
+      margin-left: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .role-community { background: rgba(0, 243, 255, 0.15); color: var(--neon-blue); }
+    .role-passenger { background: rgba(0, 255, 102, 0.15); color: var(--neon-green); }
+    .role-driver { background: rgba(255, 204, 0, 0.15); color: var(--neon-gold); }
+    .role-member { background: rgba(255, 51, 51, 0.15); color: var(--neon-red); }
+    .post-time {
+      font-size: 12px;
+      color: #555;
+    }
+    .post-text {
+      font-size: 16px;
+      line-height: 1.7;
+      margin: 10px 0 16px;
+      color: #ddd;
+    }
+    .comment-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .comment-toggle {
+      font-size: 14px;
+      color: var(--neon-blue);
+      cursor: pointer;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .comment-toggle:hover { text-shadow: 0 0 6px var(--neon-blue); }
+    .comment-item {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .comment-author {
+      font-weight: 600;
+      color: var(--neon-green);
+      margin-right: 8px;
+    }
+    .comment-text { color: #bbb; }
+    .comment-time {
+      font-size: 11px;
+      color: #444;
+      margin-left: 8px;
+    }
+    .comment-input-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .comment-input-row input {
+      flex: 1;
+      margin: 0;
+      min-width: 160px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      border-radius: 4px;
+      border: none;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      margin: 12px 0;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: scale(0.98); }
+    .btn-sm {
+      width: auto;
+      padding: 12px 20px;
+      font-size: 14px;
+      margin: 0;
+    }
+    .btn-blue {
+      background: transparent;
+      color: var(--neon-blue);
+      border: 2px solid var(--neon-blue);
+    }
+    .btn-blue:hover {
+      background: rgba(0, 243, 255, 0.15);
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+    }
+    .btn-green {
+      background: transparent;
+      color: var(--neon-green);
+      border: 2px solid var(--neon-green);
+    }
+    .btn-green:hover {
+      background: rgba(0, 255, 102, 0.15);
+      box-shadow: 0 0 22px rgba(0, 255, 102, 0.4);
+    }
+    .btn-gold {
+      background: transparent;
+      color: var(--neon-gold);
+      border: 2px solid var(--neon-gold);
+    }
+    .btn-gold:hover {
+      background: rgba(255, 204, 0, 0.15);
+      box-shadow: 0 0 22px rgba(255, 204, 0, 0.4);
+    }
+    .btn-red {
+      background: linear-gradient(90deg, #cc0000, #ff2222);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(255, 34, 34, 0.35);
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .info-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+    .info-value {
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .announce {
+      background: rgba(0, 243, 255, 0.05);
+      border: 1px solid rgba(0, 243, 255, 0.15);
+      border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .announce h4 {
+      color: var(--neon-blue);
+      font-size: 14px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 40px 20px 20px;
+      font-size: 12px;
+      color: #444;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      margin-top: 30px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .empty-board {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* === MOBILE === */
+    @media (max-width: 480px) {
+      .header { padding: 30px 15px 20px; }
+      .logo-line { font-size: 2rem; }
+      .nav-hub { gap: 10px; padding: 10px 15px 20px; }
+      .tab { font-size: 15px; padding: 12px 8px; }
+      .card { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER — EXACTLY YOUR SCREENSHOT ===== -->
+<div class="header">
+  <div class="logo-line logo-white">CATUBIG</div>
+  <div class="logo-line logo-red">TRANSPORT</div>
+  <div class="logo-line logo-blue">COOPERATIVE</div>
+  <p class="tagline">
+    Officially Registered · Serving Northern Samar and Beyond<br>
+    Post · Connect · Travel Together
+  </p>
+</div>
+
+<!-- ===== NAV TABS — ALL 4 WORKING ===== -->
+<div class="nav-hub">
+  <div class="tab tab-community active" data-panel="community">COMMUNITY</div>
+  <div class="tab tab-passenger" data-panel="passenger">PASSENGER</div>
+  <div class="tab tab-driver" data-panel="driver">DRIVER</div>
+  <div class="tab tab-member" data-panel="member">MEMBER</div>
+</div>
+
+<!-- ====================================== -->
+<!-- PANEL 1: COMMUNITY — MAIN POST BOARD -->
+<!-- ====================================== -->
+<div class="panel active" id="community">
+  <div class="announce">
+    <h4>💬 Welcome to the Community Hub</h4>
+    <p>Anyone can post here — ask questions, share updates, or say hello! Select your role and join the conversation. 🤝</p>
+  </div>
+
+  <div class="card">
+    <h3>✍️ Post a Message</h3>
+    <input type="text" id="posterName" placeholder="Your Name / Nickname" required>
+    <select id="posterRole">
+      <option value="community">👀 Visitor / Community</option>
+      <option value="passenger">🚌 Passenger</option>
+      <option value="driver">👨‍✈️ Driver</option>
+      <option value="member">🔐 Member / Operator</option>
+    </select>
+    <textarea id="postText" placeholder="Write your message, question, or announcement here..." required></textarea>
+    <button class="btn btn-blue" onclick="submitPost()">📤 Post to Community</button>
+  </div>
+
+  <div id="postsContainer"></div>
+</div>
+
+<!-- ====================================== -->
+<!-- PANEL 2: PASSENGER — INFO + POST LINK -->
+<!-- ====================================== -->
+<div class="panel" id="passenger">
+  <div class="card">
+    <h3>FOR PASSENGERS</h3>
+    <p>Everything you need to travel with CATRANSCO:</p>
+    
+    <div class="info-row">
+      <span class="info-label">Route</span>
+      <span class="info-value">Catubig ↔ Catarman</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Fare — Regular</span>
+      <span class="info-value">₱ 150 one way</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Fare — Discount</span>
+      <span class="info-value">₱ 120 (Student/Senior/PWD)</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Charter Service</span>
+      <span class="info-value">Available — Message Us</span>
+    </div>
+
+    <button class="btn btn-green" onclick="switchTab('community')">💬 Ask the Community</button>
+  </div>
+</div>
+
+<!-- ====================================== -->
+<!-- PANEL 3: DRIVER — INFO + POST LINK -->
+<!-- ====================================== -->
+<div class="panel" id="driver">
+  <div class="card">
+    <h3>FOR DRIVERS</h3>
+    <p>Official guidelines, schedules, and reminders for all CATRANSCO drivers.</p>
+    
+    <div class="info-row">
+      <span class="info-label">Uniform</span>
+      <span class="info-value">ID & Polo Shirt Required</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Pre-Trip Check</span>
+      <span class="info-value">Mandatory Before Every Trip</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Conduct</span>
+      <span class="info-value">Courteous · Punctual · Professional</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Report Issues</span>
+      <span class="info-value">Post in Community Board</span>
+    </div>
+
+    <button class="btn btn-gold" onclick="switchTab('community')">📢 Post Driver Updates</button>
+  </div>
+</div>
+
+<!-- ====================================== -->
+<!-- PANEL 4: MEMBER — INFO + POST LINK -->
+<!-- ====================================== -->
+<div class="panel" id="member">
+  <div class="card">
+    <h3>MEMBER & OPERATOR</h3>
+    <p>Official documents, forms, and internal updates for registered CATRANSCO members.</p>
+    
+    <div class="info-row">
+      <span class="info-label">Membership Form</span>
+      <span class="info-value">Available for Download</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Board Meetings</span>
+      <span class="info-value">Announced in Community</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Private Documents</span>
+      <span class="info-value">Member Login — Coming Soon</span>
+    </div>
+
+    <button class="btn btn-red" onclick="switchTab('community')">🔐 Member Announcements</button>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+  © 2026 CATUBIG TRANSPORT COOPERATIVE · All Rights Reserved<br>
+  Serving Our Community With Pride
+</div>
+
+<!-- ====================================== -->
+<!-- JAVASCRIPT — ALL WORKING FUNCTIONS -->
+<!-- ====================================== -->
+<script>
+// Storage — posts stay saved
+function getAllPosts() {
+  return JSON.parse(localStorage.getItem('catransco_posts') || '[]');
+}
+function savePosts(posts) {
+  localStorage.setItem('catransco_posts', JSON.stringify(posts));
+}
+
+// Submit new post
+function submitPost() {
+  const name = document.getElementById('posterName').value.trim();
+  const role = document.getElementById('posterRole').value;
+  const text = document.getElementById('postText').value.trim();
+  
+  if (!name || !text) {
+    alert('⚠️ Please enter your name and message!');
+    return;
+  }
+  
+  const posts = getAllPosts();
+  posts.unshift({
+    id: Date.now(),
+    name,
+    role,
+    text,
+    time: new Date().toLocaleString(),
+    comments: []
+  });
+  savePosts(posts);
+  
+  // Clear form
+  document.getElementById('posterName').value = '';
+  document.getElementById('postText').value = '';
+  
+  renderPosts();
+  alert('✅ Posted successfully! Thank you!');
+}
+
+// Add comment/reply
+function addComment(postId) {
+  const input = document.getElementById('commentInput_' + postId);
+  const text = input.value.trim();
+  if (!text) return;
+  
+  const posts = getAllPosts();
+  const post = posts.find(p => p.id === postId);
+  if (post) {
+    post.comments.push({
+      author: 'Guest',
+      text,
+      time: new Date().toLocaleTimeString()
+    });
+    savePosts(posts);
+    renderPosts();
+  }
+}
+
+// Show/hide comments
+function toggleComments(postId) {
+  const list = document.getElementById('comments_' + postId);
+  list.style.display = list.style.display === 'none' ? 'block' : 'none';
+}
+
+// Render all posts
+function renderPosts() {
+  const container = document.getElementById('postsContainer');
+  const posts = getAllPosts();
+  
+  if (posts.length === 0) {
+    container.innerHTML = '<div class="empty-board">🌟 No posts yet — be the first to say hello to CATRANSCO!</div>';
+    return;
+  }
+  
+  container.innerHTML = posts.map(post => `
+    <div class="post-item">
+      <div class="post-header">
+        <div>
+          <span class="post-author">${escapeHtml(post.name)}</span>
+          <span class="post-role role-${post.role}">${roleLabel(post.role)}</span>
+        </div>
+        <span class="post-time">${post.time}</span>
+      </div>
+      <div class="post-text">${escapeHtml(post.text)}</div>
+      
+      <div class="comment-section">
+        <span class="comment-toggle" onclick="toggleComments(${post.id})">
+          💬 ${post.comments.length} Comment${post.comments.length !== 1 ? 's' : ''}
+        </span>
+        <div id="comments_${post.id}" style="display:block;">
+          <div class="comment-list">
+            ${post.comments.length === 0 
+              ? '<span style="color:#444; font-size:13px;">No replies yet — be the first!</span>'
+              : post.comments.map(c => `
+                <div class="comment-item">
+                  <span class="comment-author">${escapeHtml(c.author)}</span>
+                  <span class="comment-text">${escapeHtml(c.text)}</span>
+                  <span class="comment-time">${c.time}</span>
+                </div>
+              `).join('')
+            }
+          </div>
+          <div class="comment-input-row">
+            <input type="text" id="commentInput_${post.id}" placeholder="Write a reply...">
+            <button class="btn btn-sm btn-green" onclick="addComment(${post.id})">Reply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Role label display
+function roleLabel(r) {
+  const map = {
+    community: 'COMMUNITY',
+    passenger: 'PASSENGER',
+    driver: 'DRIVER',
+    member: 'MEMBER'
+  };
+  return map[r] || r.toUpperCase();
+}
+
+// Safe text formatting
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Switch tab function — called from all buttons
+function switchTab(panelId) {
+  // Remove active from all tabs
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  // Add active to matching tab
+  document.querySelectorAll('.tab').forEach(tab => {
+    if (tab.getAttribute('data-panel') === panelId) {
+      tab.classList.add('active');
+    }
+  });
+  // Hide all panels, show selected
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Tab click handler
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const panelId = tab.getAttribute('data-panel');
+    switchTab(panelId);
+  });
+});
+
+// Load posts when page opens
+renderPosts();
+</script>
+
+</body>
+</html>
